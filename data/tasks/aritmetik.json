@@ -2,17 +2,17 @@
   "name": "Aritmetik Problemler",
   "task_type": "arithmetic",
   "examples": [
-    { "input": "5 ile 3'un toplami kactir?", "output": "8" },
-    { "input": "20'nin yarisi kactir?", "output": "10" }
+    { "input": "5 ile 3'ün toplamı kaçtır?", "output": "8" },
+    { "input": "20'nin yarısı kaçtır?", "output": "10" }
   ],
   "tasks": [
-    { "question": "Bir kitap 45 TL. Ali 3 kitap aldi ve kasiyere 200 TL verdi. Kac TL para ustu alir?", "answer": "65" },
-    { "question": "Bir sinifta 28 ogrenci var. Ogrencilerin yarisi kiz. Erkek ogrenci sayisi kactir?", "answer": "14" },
-    { "question": "Bir arac saatte 60 km gidiyor. 2.5 saatte kac km yol alir?", "answer": "150" },
-    { "question": "12 kalemin 4 tanesi kirmizi, geri kalani mavi. Kac mavi kalem vardir?", "answer": "8" },
-    { "question": "Bir torbada 5 kirmizi, 7 yesil, 3 sari bilye var. Toplam kac bilye vardir?", "answer": "15" },
-    { "question": "Bir isci gunde 8 saat calisiyor. 5 gunde toplam kac saat calisir?", "answer": "40" },
-    { "question": "30 TL'lik bir urune yuzde 10 indirim yapiliyor. Yeni fiyat kac TL?", "answer": "27" },
-    { "question": "Bir bahcede 6 sira var, her sirada 9 agac var. Toplam kac agac vardir?", "answer": "54" }
+    { "question": "Bir kitap 45 TL. Ali 3 kitap aldı ve kasiyere 200 TL verdi. Kaç TL para üstü alır?", "answer": "65" },
+    { "question": "Bir sınıfta 28 öğrenci var. Öğrencilerin yarısı kız. Erkek öğrenci sayısı kaçtır?", "answer": "14" },
+    { "question": "Bir araç saatte 60 km gidiyor. 2.5 saatte kaç km yol alır?", "answer": "150" },
+    { "question": "12 kalemin 4 tanesi kırmızı, geri kalanı mavi. Kaç mavi kalem vardır?", "answer": "8" },
+    { "question": "Bir torbada 5 kırmızı, 7 yeşil, 3 sarı bilye var. Toplam kaç bilye vardır?", "answer": "15" },
+    { "question": "Bir işçi günde 8 saat çalışıyor. 5 günde toplam kaç saat çalışır?", "answer": "40" },
+    { "question": "30 TL'lik bir ürüne yüzde 10 indirim yapılıyor. Yeni fiyat kaç TL?", "answer": "27" },
+    { "question": "Bir bahçede 6 sıra var, her sırada 9 ağaç var. Toplam kaç ağaç vardır?", "answer": "54" }
   ]
 }

@@ -19,6 +19,15 @@ def list_datasets() -> list[str]:
     return sorted(p.stem for p in TASKS_DIR.glob("*.json"))
 
 
+def dataset_titles() -> dict[str, str]:
+    """Dosya adini, veri setinin gorunen basligina esleyen sozluk dondurur."""
+    titles = {}
+    for stem in list_datasets():
+        data = json.loads((TASKS_DIR / f"{stem}.json").read_text(encoding="utf-8"))
+        titles[stem] = data.get("name", stem)
+    return titles
+
+
 def load_dataset(name: str) -> dict:
     """Adi verilen veri setini yukler ve ornekleri her goreve ilistirir."""
     path = TASKS_DIR / f"{name}.json"

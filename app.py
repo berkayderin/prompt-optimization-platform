@@ -1,7 +1,7 @@
-"""Prompt Optimizasyon Platformu - Streamlit arayuzu.
+"""Prompt Optimizasyon Platformu - Streamlit arayüzü.
 
-Bir gorev seti secilir, tum prompt stratejileri ayni set uzerinde calistirilir,
-dogruluk/token/gecikme acisindan karsilastirilir ve en iyi strateji secilir.
+Bir görev seti seçilir, tüm prompt stratejileri aynı set üzerinde çalıştırılır,
+doğruluk/token/gecikme açısından karşılaştırılır ve en iyi strateji seçilir.
 """
 from __future__ import annotations
 
@@ -11,81 +11,82 @@ import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
 
-from core.datasets import list_datasets, load_dataset
+from core.datasets import dataset_titles, list_datasets, load_dataset
 from core.evaluator import evaluate_strategy
 from core.llm_client import LLMClient
 from core.strategies import STRATEGIES
 
 load_dotenv()
 
-st.set_page_config(page_title="Prompt Optimizasyon Platformu", page_icon="🧪", layout="wide")
+st.set_page_config(page_title="Prompt Optimizasyon Platformu", layout="wide")
 
-# Yardim metni: sag ust kosedeki tooltip/popover icinde gosterilir.
+# Yardım metni: sağ üst köşedeki açılır pencerede gösterilir.
 YARDIM_METNI = """
 ### Bu platform ne yapar?
-Verdiginiz gorev setinde **6 farkli prompt stratejisini** (Zero-shot, Few-shot,
-Chain-of-Thought, ReAct, Tree-of-Thoughts, Meta-prompting) ayni kosullarda
-calistirir, **dogruluk** ve **maliyet (token)** acisindan karsilastirir ve
-**en iyi stratejiyi** secer.
+Verdiğiniz görev setinde **6 farklı prompt stratejisini** (Zero-shot, Few-shot,
+Chain-of-Thought, ReAct, Tree-of-Thoughts, Meta-prompting) aynı koşullarda
+çalıştırır, **doğruluk** ve **maliyet (token)** açısından karşılaştırır ve
+**en iyi stratejiyi** seçer.
 
-### Nasil kullanilir? (3 adim)
-1. Soldaki panelden bir **gorev seti** secin (aritmetik veya duygu analizi).
-2. Isterseniz **sicaklik** degerini ayarlayin.
-3. **"Stratejileri Calistir"** butonuna basin; sonuclar grafik ve tablo olarak gelir.
+### Nasıl kullanılır? (3 adım)
+1. Soldaki panelden bir **görev seti** seçin (aritmetik veya duygu analizi).
+2. İsterseniz **sıcaklık** değerini ayarlayın.
+3. **"Stratejileri Çalıştır"** düğmesine basın; sonuçlar grafik ve tablo olarak gelir.
 
-### Lokalde nasil calistirilir?
+### Lokalde nasıl çalıştırılır?
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-### Gercek sonuclar icin
-Varsayilan **MOCK** modu yalnizca akisi gosterir (dogruluk 0 cikar). Gercek
-metrikler icin `.env` dosyasinda bir saglayici ayarlayin:
+### Gerçek sonuçlar için
+Varsayılan **MOCK** modu yalnızca akışı gösterir (doğruluk 0 çıkar). Gerçek
+metrikler için `.env` dosyasında bir sağlayıcı ayarlayın:
 ```
 LLM_PROVIDER=deepseek
 DEEPSEEK_API_KEY=...
 ```
 """
 
-# --- Baslik satiri: solda baslik, sagda yardim butonu (tooltip) ---
+# --- Başlık satırı: solda başlık, sağ üstte yardım düğmesi ---
 sol, sag = st.columns([0.82, 0.18])
 with sol:
-    st.title("🧪 Prompt Optimizasyon Platformu")
-    st.caption("Farkli prompt stratejilerini karsilastirir ve en iyisini secer.")
+    st.title("Prompt Optimizasyon Platformu")
+    st.caption("Farklı prompt stratejilerini karşılaştırır ve en iyisini seçer.")
 with sag:
-    st.write("")  # dikey hizalama icin bosluk
-    with st.popover("ℹ️ Nasil Calisir?", use_container_width=True):
+    st.write("")  # dikey hizalama için boşluk
+    with st.popover("Nasıl Çalışır?", use_container_width=True):
         st.markdown(YARDIM_METNI)
 
 provider = os.getenv("LLM_PROVIDER", "mock")
 if provider == "mock":
     st.warning(
-        "Su an **MOCK** modunda; sonuclar temsilidir (dogruluk 0 cikar). Gercek "
-        "metrikler icin sag ustteki **Nasil Calisir?** bolumune bakin.",
-        icon="⚠️",
+        "Şu an MOCK modunda; sonuçlar temsilidir (doğruluk 0 çıkar). Gerçek "
+        "metrikler için sağ üstteki \"Nasıl Çalışır?\" bölümüne bakın."
     )
 
 # --- Sol panel: ayarlar ---
+titles = dataset_titles()
 with st.sidebar:
-    st.header("⚙️ Ayarlar")
-    st.write(f"Aktif saglayici: **{provider}**")
+    st.header("Ayarlar")
+    st.write(f"Aktif sağlayıcı: **{provider}**")
     st.divider()
     dataset_name = st.selectbox(
-        "1) Gorev seti",
+        "1) Görev seti",
         list_datasets(),
-        help="Stratejilerin uzerinde test edilecegi gorev kumesi.",
+        format_func=lambda stem: titles.get(stem, stem),
+        help="Stratejilerin üzerinde test edileceği görev kümesi.",
     )
     temperature = st.slider(
-        "2) Sicaklik (temperature)",
+        "2) Sıcaklık (temperature)",
         0.0, 1.5, 0.7, 0.1,
-        help="Dusuk deger daha tutarli, yuksek deger daha yaratici yanit uretir.",
+        help="Düşük değer daha tutarlı, yüksek değer daha yaratıcı yanıt üretir.",
     )
-    run = st.button("3) Stratejileri Calistir ▶", type="primary", use_container_width=True)
+    run = st.button("3) Stratejileri Çalıştır", type="primary", use_container_width=True)
 
-# --- Calistirma ---
+# --- Çalıştırma ---
 if not run:
-    st.info("Baslamak icin soldaki **1-2-3** adimlarini izleyin.", icon="👈")
+    st.info("Başlamak için soldaki 1-2-3 adımlarını izleyin.")
     st.stop()
 
 data = load_dataset(dataset_name)
@@ -93,46 +94,46 @@ tasks = data["tasks"]
 task_type = data["task_type"]
 client = LLMClient(provider)
 
-progress = st.progress(0.0, "Calistiriliyor...")
+progress = st.progress(0.0, "Çalıştırılıyor...")
 results = []
 for i, strategy in enumerate(STRATEGIES, start=1):
     results.append(evaluate_strategy(client, strategy, tasks, task_type, temperature))
-    progress.progress(i / len(STRATEGIES), f"{strategy.name} tamamlandi")
+    progress.progress(i / len(STRATEGIES), f"{strategy.name} tamamlandı")
 progress.empty()
 
 df = pd.DataFrame(
     [
         {
             "Strateji": r.strategy_name,
-            "Dogruluk": round(r.accuracy, 3),
+            "Doğruluk": round(r.accuracy, 3),
             "Ort. Token": round(r.avg_tokens, 1),
             "Ort. Gecikme (s)": round(r.avg_latency, 3),
         }
         for r in results
     ]
-).sort_values("Dogruluk", ascending=False)
+).sort_values("Doğruluk", ascending=False)
 
 best = df.iloc[0]
-st.success(f"🏆 En iyi strateji: **{best['Strateji']}** (dogruluk {best['Dogruluk']})")
+st.success(f"En iyi strateji: {best['Strateji']} (doğruluk {best['Doğruluk']})")
 
-# Ozet metrikler
+# Özet ölçümler
 m1, m2, m3 = st.columns(3)
-m1.metric("Gorev sayisi", len(tasks))
-m2.metric("En yuksek dogruluk", f"{best['Dogruluk']:.0%}")
+m1.metric("Görev sayısı", len(tasks))
+m2.metric("En yüksek doğruluk", f"{best['Doğruluk']:.0%}")
 m3.metric("En iyinin token maliyeti", f"{best['Ort. Token']:.0f}")
 
 st.divider()
 
 col1, col2 = st.columns(2)
-col1.subheader("Dogruluk")
-col1.bar_chart(df.set_index("Strateji")["Dogruluk"])
+col1.subheader("Doğruluk")
+col1.bar_chart(df.set_index("Strateji")["Doğruluk"])
 col2.subheader("Ortalama Token (maliyet)")
 col2.bar_chart(df.set_index("Strateji")["Ort. Token"])
 
-st.subheader("Karsilastirma Tablosu")
+st.subheader("Karşılaştırma Tablosu")
 st.dataframe(df, use_container_width=True, hide_index=True)
 
-with st.expander("🔍 Gorev bazinda ayrintilar"):
+with st.expander("Görev bazında ayrıntılar"):
     for r in results:
         st.markdown(f"**{r.strategy_name}**")
         st.dataframe(pd.DataFrame(r.details), use_container_width=True, hide_index=True)

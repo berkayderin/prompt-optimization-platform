@@ -68,11 +68,11 @@ def evaluate_strategy(
         total_latency += resp.latency_s
         details.append(
             {
-                "soru": task["question"],
-                "beklenen": task["answer"],
-                "yanit": resp.text,
-                "dogru": ok,
-                "token": resp.total_tokens,
+                "Soru": task["question"],
+                "Beklenen": task["answer"],
+                "Yanıt": resp.text,
+                "Doğru": ok,
+                "Token": resp.total_tokens,
             }
         )
 

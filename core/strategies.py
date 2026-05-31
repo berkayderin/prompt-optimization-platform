@@ -1,30 +1,30 @@
-"""Prompt muhendisligi stratejileri.
+"""Prompt mühendisliği stratejileri.
 
-Her strateji, bir gorevi (system, user) mesaj ciftine donusturur. Stratejiler
-literaturdeki temel tekniklere karsilik gelir: Zero-shot, Few-shot,
+Her strateji, bir görevi (system, user) mesaj çiftine dönüştürür. Stratejiler
+literatürdeki temel tekniklere karşılık gelir: Zero-shot, Few-shot,
 Chain-of-Thought (Wei ve ark., 2022), ReAct (Yao ve ark., 2022),
 Tree-of-Thoughts (Yao ve ark., 2023) ve Meta-prompting.
 
-Gorev sozlugu su alanlari icerir:
-    question : cozulecek soru/talimat (zorunlu)
-    examples : few-shot icin giris-cikis ornekleri listesi (opsiyonel)
+Görev sözlüğü şu alanları içerir:
+    question : çözülecek soru/talimat (zorunlu)
+    examples : few-shot için giriş-çıkış örnekleri listesi (opsiyonel)
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Callable
 
-# Tum stratejiler icin ortak temel sistem talimati.
-BASE_SYSTEM = "Sen yardimci ve dikkatli bir asistansin. Sorulari dogru yanitla."
+# Tüm stratejiler için ortak temel sistem talimatı.
+BASE_SYSTEM = "Sen yardımcı ve dikkatli bir asistansın. Soruları doğru yanıtla."
 
 
 def zero_shot(task: dict) -> tuple[str, str]:
-    # En sade temel cizgi (baseline): yalnizca soruyu ver.
+    # En sade temel çizgi (baseline): yalnızca soruyu ver.
     return BASE_SYSTEM, task["question"]
 
 
 def few_shot(task: dict) -> tuple[str, str]:
-    # Soru oncesinde birkac cozulmus ornek gostererek baglam ici ogrenme.
+    # Soru öncesinde birkaç çözülmüş örnek göstererek bağlam içi öğrenme.
     examples = task.get("examples", [])
     blocks = [f"Soru: {ex['input']}\nCevap: {ex['output']}" for ex in examples]
     prompt = "\n\n".join(blocks + [f"Soru: {task['question']}\nCevap:"])
@@ -32,50 +32,50 @@ def few_shot(task: dict) -> tuple[str, str]:
 
 
 def chain_of_thought(task: dict) -> tuple[str, str]:
-    # Modelden cevaptan once adim adim muhakeme istenir (Wei ve ark., 2022).
-    system = BASE_SYSTEM + " Cevaptan once adim adim dusun."
-    user = task["question"] + "\n\nAdim adim dusunerek coz, sonra son cevabi yaz."
+    # Modelden cevaptan önce adım adım muhakeme istenir (Wei ve ark., 2022).
+    system = BASE_SYSTEM + " Cevaptan önce adım adım düşün."
+    user = task["question"] + "\n\nAdım adım düşünerek çöz, sonra son cevabı yaz."
     return system, user
 
 
 def react(task: dict) -> tuple[str, str]:
-    # Dusun-Eylem-Gozlem dongusunu taklit eden yapilandirilmis muhakeme.
+    # Düşün-Eylem-Gözlem döngüsünü taklit eden yapılandırılmış muhakeme.
     system = BASE_SYSTEM + (
-        " Su donguyu izle: Dusunce (durumu degerlendir), Eylem (bir adim at), "
-        "Gozlem (sonucu yorumla). Gerekirse tekrarla, sonunda 'Cevap:' ile bitir."
+        " Şu döngüyü izle: Düşünce (durumu değerlendir), Eylem (bir adım at), "
+        "Gözlem (sonucu yorumla). Gerekirse tekrarla, sonunda 'Cevap:' ile bitir."
     )
     return system, task["question"]
 
 
 def tree_of_thoughts(task: dict) -> tuple[str, str]:
-    # Birden cok cozum yolu uretip kiyaslama (Yao ve ark., 2023); tek cagrida
-    # basitlestirilmis hali.
+    # Birden çok çözüm yolu üretip kıyaslama (Yao ve ark., 2023); tek çağrıda
+    # basitleştirilmiş hali.
     system = BASE_SYSTEM + (
-        " Soruyu cozmek icin 3 farkli yaklasim uret, her birini kisaca degerlendir, "
-        "en guclu olani sec ve son cevabi 'Cevap:' ile ver."
+        " Soruyu çözmek için 3 farklı yaklaşım üret, her birini kısaca değerlendir, "
+        "en güçlü olanı seç ve son cevabı 'Cevap:' ile ver."
     )
     return system, task["question"]
 
 
 def meta_prompting(task: dict) -> tuple[str, str]:
-    # Modele once bu gorev icin iyi bir talimat yazdirip sonra onu uygulatma.
+    # Modele önce bu görev için iyi bir talimat yazdırıp sonra onu uygulatma.
     user = (
-        "Once bu gorevi en iyi cozecek talimati kendin tasarla, sonra o talimati "
-        f"uygulayarak coz.\n\nGorev: {task['question']}"
+        "Önce bu görevi en iyi çözecek talimatı kendin tasarla, sonra o talimatı "
+        f"uygulayarak çöz.\n\nGörev: {task['question']}"
     )
     return BASE_SYSTEM, user
 
 
 @dataclass
 class Strategy:
-    """Bir prompt stratejisinin kimligi, gorunen adi ve uretici fonksiyonu."""
+    """Bir prompt stratejisinin kimliği, görünen adı ve üretici fonksiyonu."""
 
     key: str
     name: str
     build: Callable[[dict], tuple[str, str]]
 
 
-# Arayuz ve degerlendirme motorunun uzerinde donecegi strateji listesi.
+# Arayüz ve değerlendirme motorunun üzerinde döneceği strateji listesi.
 STRATEGIES = [
     Strategy("zero_shot", "Zero-shot", zero_shot),
     Strategy("few_shot", "Few-shot", few_shot),

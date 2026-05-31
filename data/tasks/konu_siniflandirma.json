@@ -1,0 +1,16 @@
+{
+  "name": "Konu Sınıflandırma",
+  "task_type": "classification",
+  "examples": [
+    { "input": "Milli takım çeyrek finalde rakibini 2-0 yendi.", "output": "spor" },
+    { "input": "Merkez bankası faiz kararını açıkladı.", "output": "ekonomi" }
+  ],
+  "tasks": [
+    { "question": "Bu haber başlığının konusunu spor, ekonomi veya teknoloji olarak sınıflandır: 'Yapay zeka destekli yeni işlemci piyasaya sürüldü.'", "answer": "teknoloji" },
+    { "question": "Bu haber başlığının konusunu spor, ekonomi veya teknoloji olarak sınıflandır: 'Borsa güne yükselişle başladı, dolar geriledi.'", "answer": "ekonomi" },
+    { "question": "Bu haber başlığının konusunu spor, ekonomi veya teknoloji olarak sınıflandır: 'Basketbol liginde şampiyon son maçta belli oldu.'", "answer": "spor" },
+    { "question": "Bu haber başlığının konusunu spor, ekonomi veya teknoloji olarak sınıflandır: 'Enflasyon verileri beklentilerin altında kaldı.'", "answer": "ekonomi" },
+    { "question": "Bu haber başlığının konusunu spor, ekonomi veya teknoloji olarak sınıflandır: 'Yeni nesil grafik kartları oyunculara tanıtıldı.'", "answer": "teknoloji" },
+    { "question": "Bu haber başlığının konusunu spor, ekonomi veya teknoloji olarak sınıflandır: 'Futbol takımı yeni teknik direktörüyle anlaştı.'", "answer": "spor" }
+  ]
+}

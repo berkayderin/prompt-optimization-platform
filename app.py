@@ -91,6 +91,12 @@ with sekme1:
         st.success(f"En iyi strateji: {df.iloc[0]['Strateji']}")
         st.bar_chart(df.set_index("Strateji")["Doğruluk"])
         st.dataframe(df, use_container_width=True, hide_index=True)
+        st.download_button(
+            "Sonuçları indir (CSV)",
+            df.to_csv(index=False).encode("utf-8"),
+            file_name=f"sonuclar_{dataset_name}.csv",
+            mime="text/csv",
+        )
 
 
 # --- Sekme 2: meta-prompting ile otomatik iyileştirme ---

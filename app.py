@@ -19,10 +19,46 @@ from core.datasets import dataset_titles, list_datasets, load_dataset
 from core.evaluator import evaluate_strategy
 from core.llm_client import LLMClient
 from core.optimizer import optimize
-from core.strategies import BASE_SYSTEM, STRATEGIES
+from core.strategies import BASE_SYSTEM, STRATEGIES, STRATEGY_REASONS
 from core.versioning import PromptVersion, compare, prompt_id
 
 load_dotenv()
+
+
+def sonuc_aciklamasi(results: list, task_type: str) -> str:
+    """Karşılaştırma sonucunu, kazananın nedenini ve maliyet dengesini sade
+    dille açıklayan bir metin üretir."""
+    sirali = sorted(results, key=lambda r: r.accuracy, reverse=True)
+    en_iyi = sirali[0]
+    cumleler = [
+        f"En yüksek doğruluğu **{en_iyi.strategy_name}** verdi; çünkü bu yöntem "
+        f"{STRATEGY_REASONS.get(en_iyi.strategy_key, '')}."
+    ]
+
+    en_basit = next((r for r in results if r.strategy_key == "zero_shot"), None)
+    if en_basit and en_basit.strategy_key != en_iyi.strategy_key:
+        fark = (en_iyi.accuracy - en_basit.accuracy) * 100
+        if fark > 0:
+            cumleler.append(
+                f"En basit yöntem olan Zero-shot'a göre doğruluk yaklaşık "
+                f"{fark:.0f} puan daha yüksek."
+            )
+
+    en_ucuz = min(results, key=lambda r: r.avg_tokens)
+    if en_iyi.avg_tokens > en_ucuz.avg_tokens * 1.3:
+        cumleler.append(
+            f"Ancak bu doğruluğun bir bedeli var: {en_iyi.strategy_name} ortalama "
+            f"{en_iyi.avg_tokens:.0f} token harcarken en ekonomik yöntem "
+            f"({en_ucuz.strategy_name}) {en_ucuz.avg_tokens:.0f} token kullanıyor. "
+            f"Yani daha yüksek doğruluk, daha yüksek maliyetle geliyor."
+        )
+
+    if task_type == "classification":
+        cumleler.append(
+            "Sınıflandırma görevlerinde yöntemler arası fark, akıl yürütme "
+            "görevlerine göre genellikle daha küçüktür."
+        )
+    return " ".join(cumleler)
 
 st.set_page_config(page_title="Prompt Optimizasyon Platformu", layout="centered")
 
@@ -104,6 +140,10 @@ with sekme1:
         ).sort_values("Doğruluk", ascending=False)
 
         st.success(f"En iyi strateji: {df.iloc[0]['Strateji']}")
+
+        st.markdown("**Sonuç neden böyle?**")
+        st.write(sonuc_aciklamasi(results, task_type))
+
         st.bar_chart(df.set_index("Strateji")["Doğruluk"])
         st.dataframe(df, use_container_width=True, hide_index=True)
         st.download_button(

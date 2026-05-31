@@ -73,6 +73,23 @@ class Strategy:
     build: Callable[[dict], tuple[str, str]]
 
 
+# Her stratejinin neden işe yaradığına dair sade açıklama; arayüzde sonucun
+# nedenini anlatmak için kullanılır.
+STRATEGY_REASONS = {
+    "zero_shot": "modele hiç örnek ya da yönlendirme vermeden soruyu doğrudan sorar; "
+    "en basit yöntemdir ve genellikle en düşük doğruluğu verir",
+    "few_shot": "soru öncesinde çözülmüş birkaç örnek göstererek modele beklenen "
+    "yanıt biçimini öğretir",
+    "cot": "modelden cevaptan önce adım adım düşünmesini ister; bu, özellikle hesap "
+    "ve akıl yürütme gerektiren sorularda doğruluğu artırır",
+    "react": "düşün-eylem-gözlem döngüsüyle ilerleyerek çok adımlı problemleri parça "
+    "parça çözer",
+    "tot": "aynı soru için birden çok çözüm yolu üretip en güçlüsünü seçer; zor "
+    "problemlerde başarılıdır ama daha çok işlem (token) harcar",
+    "meta": "modelin, görevi en iyi çözecek talimatı önce kendisinin tasarlamasını sağlar",
+}
+
+
 # Arayüz ve değerlendirme motorunun üzerinde döneceği strateji listesi.
 STRATEGIES = [
     Strategy("zero_shot", "Zero-shot", zero_shot),

@@ -1,0 +1,16 @@
+{
+  "name": "Duygu Analizi",
+  "task_type": "classification",
+  "examples": [
+    { "input": "Bu urunu cok begendim, harika!", "output": "pozitif" },
+    { "input": "Kargo cok gec geldi, hayal kirikligi.", "output": "negatif" }
+  ],
+  "tasks": [
+    { "question": "Su yorumun duygu durumunu pozitif, negatif veya notr olarak siniflandir: 'Yemek soguk geldi ve servis berbatti.'", "answer": "negatif" },
+    { "question": "Su yorumun duygu durumunu pozitif, negatif veya notr olarak siniflandir: 'Otelin manzarasi muhtesemdi, tekrar gelecegim.'", "answer": "pozitif" },
+    { "question": "Su yorumun duygu durumunu pozitif, negatif veya notr olarak siniflandir: 'Telefon kutudan ciktigi gibi, beklendigi kadar.'", "answer": "notr" },
+    { "question": "Su yorumun duygu durumunu pozitif, negatif veya notr olarak siniflandir: 'Musteri hizmetleri ilgisizdi ve sorunum cozulmedi.'", "answer": "negatif" },
+    { "question": "Su yorumun duygu durumunu pozitif, negatif veya notr olarak siniflandir: 'Fiyatina gore gayet iyi bir tercih, memnun kaldim.'", "answer": "pozitif" },
+    { "question": "Su yorumun duygu durumunu pozitif, negatif veya notr olarak siniflandir: 'Urun aciklamada yazildigi gibi, ekstra bir yorumum yok.'", "answer": "notr" }
+  ]
+}

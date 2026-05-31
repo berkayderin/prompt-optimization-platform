@@ -1,0 +1,18 @@
+{
+  "name": "Aritmetik Problemler",
+  "task_type": "arithmetic",
+  "examples": [
+    { "input": "5 ile 3'un toplami kactir?", "output": "8" },
+    { "input": "20'nin yarisi kactir?", "output": "10" }
+  ],
+  "tasks": [
+    { "question": "Bir kitap 45 TL. Ali 3 kitap aldi ve kasiyere 200 TL verdi. Kac TL para ustu alir?", "answer": "65" },
+    { "question": "Bir sinifta 28 ogrenci var. Ogrencilerin yarisi kiz. Erkek ogrenci sayisi kactir?", "answer": "14" },
+    { "question": "Bir arac saatte 60 km gidiyor. 2.5 saatte kac km yol alir?", "answer": "150" },
+    { "question": "12 kalemin 4 tanesi kirmizi, geri kalani mavi. Kac mavi kalem vardir?", "answer": "8" },
+    { "question": "Bir torbada 5 kirmizi, 7 yesil, 3 sari bilye var. Toplam kac bilye vardir?", "answer": "15" },
+    { "question": "Bir isci gunde 8 saat calisiyor. 5 gunde toplam kac saat calisir?", "answer": "40" },
+    { "question": "30 TL'lik bir urune yuzde 10 indirim yapiliyor. Yeni fiyat kac TL?", "answer": "27" },
+    { "question": "Bir bahcede 6 sira var, her sirada 9 agac var. Toplam kac agac vardir?", "answer": "54" }
+  ]
+}

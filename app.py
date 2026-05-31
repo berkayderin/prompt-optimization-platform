@@ -4,6 +4,8 @@
   1. Karşılaştırma : tüm stratejileri aynı görev setinde kıyaslar.
   2. Optimizasyon  : meta-prompting ile bir talimatı tur tur iyileştirir.
   3. A/B Testi     : iki stratejiyi doğrudan karşılaştırır.
+
+Arayüz, bu konuyu bilmeyen kullanıcılar için adım adım yönlendirme içerir.
 """
 from __future__ import annotations
 
@@ -24,52 +26,65 @@ load_dotenv()
 
 st.set_page_config(page_title="Prompt Optimizasyon Platformu", layout="centered")
 
-YARDIM_METNI = """
-**Ne yapar?** Verdiğiniz görevde farklı prompt stratejilerini dener,
-doğruluk ve maliyet açısından karşılaştırır, en iyisini seçer.
+# --- Başlık ve kısa, sade açıklama ---
+st.title("Prompt Optimizasyon Platformu")
+st.write(
+    "Bu araç, bir yapay zeka modeline soru sormanın farklı yollarını (stratejileri) "
+    "dener ve hangisinin en doğru sonucu verdiğini gösterir."
+)
 
-**Nasıl kullanılır?**
-1. Soldan bir görev seti seçin.
-2. Bir sekme açıp "Çalıştır" düğmesine basın.
-
-**Gerçek sonuçlar için** `.env` dosyasında bir sağlayıcı ayarlayın:
-`LLM_PROVIDER=deepseek` ve `DEEPSEEK_API_KEY=...`
-"""
-
-# --- Başlık ve yardım ---
-sol, sag = st.columns([0.75, 0.25])
-sol.title("Prompt Optimizasyon Platformu")
-with sag:
-    st.write("")
-    with st.popover("Yardım", use_container_width=True):
-        st.markdown(YARDIM_METNI)
+# --- Her zaman görünen adım adım kullanım kılavuzu ---
+st.info(
+    "Nasıl kullanılır?\n\n"
+    "1. Soldaki panelden bir **görev seti** seçin.\n"
+    "2. Aşağıdaki sekmelerden birini açın (başlangıç için **Karşılaştırma** önerilir).\n"
+    "3. **Çalıştır** düğmesine basın ve sonuçları görün."
+)
 
 provider = os.getenv("LLM_PROVIDER", "mock")
 if provider == "mock":
-    st.info("MOCK modunda çalışıyor; gerçek sonuçlar için bir sağlayıcı ayarlayın (Yardım).")
+    st.caption(
+        "Not: Şu an deneme modunda çalışıyor; sonuçlar örnek (simülasyon) verisidir, "
+        "platformun nasıl çalıştığını göstermek içindir. Gerçek sonuçlar için bir "
+        "yapay zeka sağlayıcısı (DeepSeek/GLM) ayarlanmalıdır."
+    )
 
-# --- Sol panel: ortak ayarlar ---
+# --- Sol panel: adım adım ayarlar ---
 titles = dataset_titles()
 with st.sidebar:
     st.header("Ayarlar")
+    st.markdown("**Adım 1 — Görev seti seçin**")
     dataset_name = st.selectbox(
         "Görev seti",
         list_datasets(),
         format_func=lambda stem: titles.get(stem, stem),
+        help="Modele sorulacak hazır soruların bulunduğu küme.",
+        label_visibility="collapsed",
     )
-    temperature = st.slider("Sıcaklık", 0.0, 1.5, 0.7, 0.1)
+    st.markdown("**Adım 2 — Sıcaklık (isteğe bağlı)**")
+    temperature = st.slider(
+        "Sıcaklık",
+        0.0, 1.5, 0.7, 0.1,
+        help="Düşük değer daha tutarlı, yüksek değer daha yaratıcı yanıt verir. "
+        "Emin değilseniz olduğu gibi bırakın.",
+        label_visibility="collapsed",
+    )
 
 data = load_dataset(dataset_name)
 tasks = data["tasks"]
 task_type = data["task_type"]
 client = LLMClient(provider)
 
+st.markdown("**Adım 3 — Bir sekme seçip çalıştırın**")
 sekme1, sekme2, sekme3 = st.tabs(["Karşılaştırma", "Optimizasyon", "A/B Testi"])
 
 
 # --- Sekme 1: tüm stratejileri karşılaştır ---
 with sekme1:
-    st.write("Tüm stratejileri aynı görev setinde karşılaştırır.")
+    st.write(
+        "Tüm soru sorma yöntemlerini dener ve en iyi sonucu vereni bulur. "
+        "Başlamak için en uygun seçenek budur."
+    )
     if st.button("Çalıştır", type="primary", key="btn_karsilastir"):
         with st.spinner("Çalıştırılıyor..."):
             results = [
@@ -101,7 +116,10 @@ with sekme1:
 
 # --- Sekme 2: meta-prompting ile otomatik iyileştirme ---
 with sekme2:
-    st.write("Bir talimatı tur tur iyileştirir ve en iyisini bulur.")
+    st.write(
+        "İleri düzey: Yazdığınız bir talimatı, model aracılığıyla tur tur otomatik "
+        "geliştirir ve en iyi halini bulur."
+    )
     seed = st.text_area("Başlangıç talimatı", value=BASE_SYSTEM, height=70)
     rounds = st.slider("Tur sayısı", 1, 5, 3, key="opt_rounds")
 
@@ -122,11 +140,11 @@ with sekme2:
 
 # --- Sekme 3: iki stratejiyi karşılaştır (A/B) ---
 with sekme3:
-    st.write("Seçtiğiniz iki stratejiyi karşılaştırır.")
+    st.write("İleri düzey: Seçtiğiniz iki yöntemi birebir karşılaştırır.")
     isimler = [s.name for s in STRATEGIES]
     c1, c2 = st.columns(2)
-    a_ad = c1.selectbox("A", isimler, index=0, key="ab_a")
-    b_ad = c2.selectbox("B", isimler, index=2, key="ab_b")
+    a_ad = c1.selectbox("Birinci yöntem", isimler, index=0, key="ab_a")
+    b_ad = c2.selectbox("İkinci yöntem", isimler, index=2, key="ab_b")
 
     if st.button("Çalıştır", type="primary", key="btn_ab"):
         strat_a = next(s for s in STRATEGIES if s.name == a_ad)

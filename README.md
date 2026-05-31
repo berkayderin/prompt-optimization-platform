@@ -30,9 +30,9 @@ platform, söz konusu boşluğu doldurmayı hedefler.
 |---|---|
 | Zero-shot | Örneksiz, doğrudan talimat (temel çizgi) |
 | Few-shot | Bağlam içi öğrenme için çözülmüş örnekler |
-| Chain-of-Thought | Cevaptan önce adım adım muhakeme (Wei ve ark., 2022) |
-| ReAct | Düşünce-Eylem-Gözlem döngüsü (Yao ve ark., 2022) |
-| Tree-of-Thoughts | Birden çok çözüm yolu üretip seçme (Yao ve ark., 2023) |
+| Chain-of-Thought | Cevaptan önce adım adım muhakeme |
+| ReAct | Düşünce-Eylem-Gözlem döngüsü |
+| Tree-of-Thoughts | Birden çok çözüm yolu üretip seçme |
 | Meta-prompting | Modelin görev için kendi talimatını tasarlaması |
 
 ## Mimari

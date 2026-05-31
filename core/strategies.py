@@ -2,8 +2,7 @@
 
 Her strateji, bir görevi (system, user) mesaj çiftine dönüştürür. Stratejiler
 literatürdeki temel tekniklere karşılık gelir: Zero-shot, Few-shot,
-Chain-of-Thought (Wei ve ark., 2022), ReAct (Yao ve ark., 2022),
-Tree-of-Thoughts (Yao ve ark., 2023) ve Meta-prompting.
+Chain-of-Thought, ReAct, Tree-of-Thoughts ve Meta-prompting.
 
 Görev sözlüğü şu alanları içerir:
     question : çözülecek soru/talimat (zorunlu)
@@ -32,7 +31,7 @@ def few_shot(task: dict) -> tuple[str, str]:
 
 
 def chain_of_thought(task: dict) -> tuple[str, str]:
-    # Modelden cevaptan önce adım adım muhakeme istenir (Wei ve ark., 2022).
+    # Modelden cevaptan önce adım adım muhakeme istenir.
     system = BASE_SYSTEM + " Cevaptan önce adım adım düşün."
     user = task["question"] + "\n\nAdım adım düşünerek çöz, sonra son cevabı yaz."
     return system, user
@@ -48,8 +47,7 @@ def react(task: dict) -> tuple[str, str]:
 
 
 def tree_of_thoughts(task: dict) -> tuple[str, str]:
-    # Birden çok çözüm yolu üretip kıyaslama (Yao ve ark., 2023); tek çağrıda
-    # basitleştirilmiş hali.
+    # Birden çok çözüm yolu üretip kıyaslama; tek çağrıda basitleştirilmiş hali.
     system = BASE_SYSTEM + (
         " Soruyu çözmek için 3 farklı yaklaşım üret, her birini kısaca değerlendir, "
         "en güçlü olanı seç ve son cevabı 'Cevap:' ile ver."

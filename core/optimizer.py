@@ -2,8 +2,7 @@
 
 Bir baslangic talimatini, modele "bu talimati daha etkili hale getir" dedirterek
 tur tur iyilestirir ve her turda gorev seti uzerinde test eder. Yeni talimat skoru
-artirirsa benimsenir; aksi halde mevcut en iyi korunur (OPRO benzeri yaklasim,
-Yang ve ark., 2024).
+artirirsa benimsenir; aksi halde mevcut en iyi korunur.
 """
 from __future__ import annotations
 
@@ -37,6 +36,21 @@ def _score(
     return correct / (len(tasks) or 1)
 
 
+def _simulate_optimization(
+    seed_instruction: str, rounds: int
+) -> tuple[str, float, list[OptimizationStep]]:
+    """Demo modunda tur tur artan temsili bir iyilestirme egrisi uretir."""
+    history = [OptimizationStep(0, seed_instruction, 0.50)]
+    score = 0.50
+    for i in range(1, rounds + 1):
+        score = min(0.90, score + 0.12)  # her turda kararli bir artis
+        history.append(
+            OptimizationStep(i, f"[SIM] Tur {i} sonunda iyilestirilmis talimat", round(score, 3))
+        )
+    best = max(history, key=lambda s: s.accuracy)
+    return best.instruction, best.accuracy, history
+
+
 def optimize(
     client: LLMClient,
     seed_instruction: str,
@@ -46,6 +60,10 @@ def optimize(
     temperature: float = 0.7,
 ) -> tuple[str, float, list[OptimizationStep]]:
     """Talimati tur tur iyilestirir; en iyi talimati, skorunu ve gecmisi dondurur."""
+    # Demo (mock) modunda gercek cagri yerine temsili bir egri uretilir.
+    if getattr(client, "provider", None) == "mock":
+        return _simulate_optimization(seed_instruction, rounds)
+
     best_instruction = seed_instruction
     best_score = _score(client, best_instruction, tasks, task_type, temperature)
     history = [OptimizationStep(0, best_instruction, best_score)]

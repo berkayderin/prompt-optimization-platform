@@ -32,6 +32,9 @@ class PromptVersion:
 
 def save_version(version: PromptVersion, store: str = "versions.json") -> None:
     """Surumu JSON deposunun sonuna ekler (yoksa olusturur)."""
+    # Sonuc klasoru yoksa olustur; temiz bir kurulumda veya Docker imajinda
+    # (results klasoru imaja dahil edilmez) bu dizin bulunmayabilir.
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     path = RESULTS_DIR / store
     records = []
     if path.exists():

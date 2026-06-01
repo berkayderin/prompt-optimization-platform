@@ -16,7 +16,7 @@ import streamlit as st
 from dotenv import load_dotenv
 
 from core.datasets import dataset_titles, list_datasets, load_dataset
-from core.evaluator import evaluate_strategy
+from core.evaluator import evaluate_all, evaluate_strategy
 from core.llm_client import LLMClient
 from core.optimizer import optimize
 from core.strategies import BASE_SYSTEM, STRATEGIES, STRATEGY_REASONS
@@ -142,10 +142,7 @@ with sekme1:
     )
     if st.button("Çalıştır", type="primary", key="btn_karsilastir"):
         with st.spinner("Çalıştırılıyor..."):
-            results = [
-                evaluate_strategy(client, s, tasks, task_type, temperature)
-                for s in STRATEGIES
-            ]
+            results = evaluate_all(client, STRATEGIES, tasks, task_type, temperature)
 
         df = pd.DataFrame(
             [

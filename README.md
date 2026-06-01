@@ -12,7 +12,7 @@ API anahtarı gerektirmeyen deneme (mock) modunda çalışır: arayüzün tümü
 akışı denenebilir, sonuçlar temsilî (simülasyon) verilerle gösterilir. Gerçek model
 sonuçları için bir sağlayıcı (DeepSeek/GLM) anahtarı tanımlanması yeterlidir.
 
-> Canlı adres: _(dağıtım sonrası buraya eklenecek)_
+> Canlı adres: https://prompt-optimization-platform.berkayderin.com.tr/
 
 ## Motivasyon
 

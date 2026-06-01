@@ -5,6 +5,15 @@ bunları aynı koşullarda karşılaştıran ve en iyi performans gösteren stra
 deneysel bir platform. Yüksek lisans tez çalışması kapsamında, prompt mühendisliği
 tekniklerinin kontrollü karşılaştırması için geliştirilmiştir.
 
+## Canlı Demo
+
+Uygulama Docker tabanlı olarak Dokploy üzerinde yayınlanmaktadır. Yayındaki sürüm,
+API anahtarı gerektirmeyen deneme (mock) modunda çalışır: arayüzün tümü ve karşılaştırma
+akışı denenebilir, sonuçlar temsilî (simülasyon) verilerle gösterilir. Gerçek model
+sonuçları için bir sağlayıcı (DeepSeek/GLM) anahtarı tanımlanması yeterlidir.
+
+> Canlı adres: _(dağıtım sonrası buraya eklenecek)_
+
 ## Motivasyon
 
 Literatürde Chain-of-Thought, ReAct, Tree-of-Thoughts gibi çok sayıda prompt tekniği
@@ -17,11 +26,13 @@ platform, söz konusu boşluğu doldurmayı hedefler.
 ## Özellikler
 
 - Tek bir görev setinde altı farklı prompt stratejisinin kontrollü karşılaştırması
-- Doğruluk, ortalama token maliyeti ve ortalama gecikme metrikleri
-- Meta-prompting tabanlı otomatik prompt iyileştirme (OPRO benzeri iteratif döngü)
-- İki stratejiyi doğrudan kıyaslayan A/B testi
+- Doğruluk ve ortalama token maliyeti metrikleri (gecikme süresi de motor düzeyinde ölçülür)
+- Kazanan stratejinin neden öne çıktığını sade dille açıklayan sonuç yorumu
+- Meta-prompting tabanlı otomatik prompt iyileştirme (iteratif döngü)
+- İki stratejiyi doğrudan kıyaslayan ve sonucu sürüm geçmişine kaydeden A/B testi
 - Sağlayıcı bağımsız mimari: DeepSeek, GLM, OpenAI ve yerel Ollama desteği
-- API anahtarı gerektirmeyen mock mod ile tüm akışın çevrimdışı denenebilmesi
+- API anahtarı gerektirmeyen deneme (mock) modu ile tüm akışın çevrimdışı denenebilmesi
+- Konuya yabancı kullanıcılar için adım adım yönlendirmeli arayüz
 - Sonuçların CSV olarak dışa aktarılması
 
 ## Desteklenen Stratejiler
@@ -71,8 +82,21 @@ streamlit run app.py
 ```
 
 Uygulama varsayılan olarak `http://localhost:8501` adresinde açılır. Anahtar
-tanımlanmadığında mock modda çalışır; arayüz ve tüm akış denenebilir, ancak doğruluk
-değerleri temsilidir.
+tanımlanmadığında deneme (mock) modda çalışır; arayüz ve tüm akış denenebilir, ancak
+doğruluk değerleri temsilidir.
+
+## Nasıl Kullanılır
+
+Arayüz, konuya yabancı kullanıcılar için adım adım yönlendirilmiştir:
+
+1. Soldaki panelden bir **görev seti** seçin (aritmetik, duygu analizi veya konu
+   sınıflandırma). Seçilen setin ne olduğu ve neden seçildiği ekranda açıklanır.
+2. Bir sekme açın:
+   - **Karşılaştırma**: Tüm stratejileri aynı sette dener ve en iyisini, ardından
+     bu sonucun nedenini açıklar. Başlamak için en uygun seçenek budur.
+   - **Optimizasyon**: Tek bir başlangıç talimatını tur tur otomatik iyileştirir.
+   - **A/B Testi**: Seçtiğiniz iki yöntemi birebir karşılaştırır.
+3. **Çalıştır** düğmesine basın ve sonuçları görün.
 
 ## Yapılandırma
 
@@ -102,8 +126,14 @@ yapıda bir JSON dosyası eklemek yeterlidir; arayüz dosyayı otomatik tanır.
 
 Tüm stratejiler aynı görev seti üzerinde çalıştırılır. Model yanıtından cevap çıkarılır
 (sayısal görevlerde son sayı, sınıflandırma görevlerinde beklenen etiketin metinde
-geçmesi) ve beklenen cevapla karşılaştırılır. Her strateji için doğruluk oranı, ortalama
-token sayısı ve ortalama gecikme raporlanır.
+geçmesi) ve beklenen cevapla karşılaştırılır. Değerlendirme motoru her strateji için
+doğruluk oranı, ortalama token sayısı ve ortalama gecikme süresini hesaplar; arayüzde
+karşılaştırmayı sade tutmak için doğruluk ve token maliyeti gösterilir.
+
+Deneme (mock) modunda gerçek model çağrısı yapılmaz; bunun yerine her strateji için
+deterministik, temsilî sonuçlar üretilir. Bu sayede platform anahtarsız olarak
+denenebilir. Bu değerler bilimsel ölçüm değildir; gerçek sonuçlar bir sağlayıcı
+tanımlanarak elde edilir.
 
 ## Docker ile Çalıştırma
 

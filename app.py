@@ -20,7 +20,7 @@ from core.evaluator import evaluate_strategy
 from core.llm_client import LLMClient
 from core.optimizer import optimize
 from core.strategies import BASE_SYSTEM, STRATEGIES, STRATEGY_REASONS
-from core.versioning import PromptVersion, compare, prompt_id
+from core.versioning import PromptVersion, compare, prompt_id, save_version
 
 load_dotenv()
 
@@ -176,8 +176,15 @@ with sekme1:
 # --- Sekme 2: meta-prompting ile otomatik iyileştirme ---
 with sekme2:
     st.write(
-        "İleri düzey: Yazdığınız bir talimatı, model aracılığıyla tur tur otomatik "
-        "geliştirir ve en iyi halini bulur."
+        "İleri düzey: Yazdığınız bir talimatı, modelin kendisine tur tur "
+        "iyileştirterek en iyi halini bulur. Karşılaştırma sekmesi hazır yöntemleri "
+        "dener; bu sekme ise tek bir talimatı otomatik olarak geliştirir."
+    )
+    st.caption(
+        "Nasıl çalışır: Başlangıç talimatı görev setinde test edilir. Sonra model, "
+        "talimatı daha iyi hale getirmesi için yönlendirilir; yeni talimat tekrar "
+        "test edilir. Skoru artıran talimat benimsenir. Bu, seçtiğiniz tur sayısı "
+        "kadar tekrarlanır."
     )
     seed = st.text_area("Başlangıç talimatı", value=BASE_SYSTEM, height=70)
     rounds = st.slider("Tur sayısı", 1, 5, 3, key="opt_rounds")
@@ -189,6 +196,23 @@ with sekme2:
             )
 
         st.success(f"En iyi doğruluk: {best_score:.0%}")
+
+        ilk = history[0].accuracy
+        kazanc = (best_score - ilk) * 100
+        st.markdown("**Sonuç neden böyle?**")
+        if kazanc > 0:
+            st.write(
+                f"Başlangıç talimatı %{ilk * 100:.0f} doğrulukla başladı; otomatik "
+                f"iyileştirme sonunda %{best_score * 100:.0f} doğruluğa ulaştı "
+                f"(yaklaşık {kazanc:.0f} puan artış). Aşağıdaki talimat, görev "
+                "setinde en yüksek skoru veren sürümdür."
+            )
+        else:
+            st.write(
+                "Bu görev setinde iyileştirme turları başlangıç talimatını geçemedi; "
+                "yani başlangıç talimatı zaten yeterince iyiydi. En iyi sürüm "
+                "aşağıdadır."
+            )
         st.code(best_instruction)
 
         hist_df = pd.DataFrame(
@@ -199,7 +223,12 @@ with sekme2:
 
 # --- Sekme 3: iki stratejiyi karşılaştır (A/B) ---
 with sekme3:
-    st.write("İleri düzey: Seçtiğiniz iki yöntemi birebir karşılaştırır.")
+    st.write(
+        "İleri düzey: Seçtiğiniz iki yöntemi birebir karşılaştırır. Tüm yöntemleri "
+        "değil de yalnızca merak ettiğiniz iki tanesini kıyaslamak için kullanılır. "
+        "Sonuç, her iki yöntemin doğruluğunu ve token maliyetini yan yana gösterir; "
+        "ayrıca sonuçlar sürüm geçmişine kaydedilir."
+    )
     isimler = [s.name for s in STRATEGIES]
     c1, c2 = st.columns(2)
     a_ad = c1.selectbox("Birinci yöntem", isimler, index=0, key="ab_a")
@@ -215,9 +244,16 @@ with sekme3:
 
         va = PromptVersion(prompt_id(strat_a.key), strat_a.key, strat_a.name, ra.accuracy, ra.avg_tokens)
         vb = PromptVersion(prompt_id(strat_b.key), strat_b.key, strat_b.name, rb.accuracy, rb.avg_tokens)
+
+        # Karşılaştırılan iki sürümü, sonradan izlenebilmesi için sürüm
+        # geçmişine kaydet (data/results/versions.json).
+        save_version(va)
+        save_version(vb)
+
         kazanan = a_ad if compare(va, vb)["kazanan"] == va.pid else b_ad
 
         st.success(f"Kazanan: {kazanan}")
         c1, c2 = st.columns(2)
         c1.metric(a_ad, f"{ra.accuracy:.0%}", f"{ra.avg_tokens:.0f} token")
         c2.metric(b_ad, f"{rb.accuracy:.0%}", f"{rb.avg_tokens:.0f} token")
+        st.caption("Bu karşılaştırma sürüm geçmişine kaydedildi.")

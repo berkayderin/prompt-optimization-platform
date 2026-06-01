@@ -25,7 +25,7 @@ class PromptVersion:
 
     pid: str
     strategy_key: str
-    prompt_text: str
+    strategy_name: str
     accuracy: float
     avg_tokens: float
 

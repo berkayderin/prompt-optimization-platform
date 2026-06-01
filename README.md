@@ -48,7 +48,7 @@ core/
   versioning.py         Prompt sürümleme ve A/B karşılaştırma
 data/
   tasks/                Görev setleri (aritmetik, duygu analizi, konu sınıflandırma)
-  results/              Deney çıktıları (sürüm geçmişi, dışa aktarmalar)
+  results/              A/B testinde kaydedilen prompt sürüm geçmişi (versions.json)
 ```
 
 DeepSeek, GLM, OpenAI ve Ollama hepsi OpenAI uyumlu bir API sunduğundan, yalnızca

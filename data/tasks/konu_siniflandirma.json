@@ -1,6 +1,7 @@
 {
   "name": "Konu Sınıflandırma",
   "task_type": "classification",
+  "description": "Haber başlıklarını spor, ekonomi veya teknoloji konusuna ayırma görevi. Duygu Analizi'ne benzer bir sınıflandırma türüdür; ikisinin birlikte olması, sonucun rastlantı değil görev tipinden kaynaklandığını gösterir.",
   "examples": [
     { "input": "Milli takım çeyrek finalde rakibini 2-0 yendi.", "output": "spor" },
     { "input": "Merkez bankası faiz kararını açıkladı.", "output": "ekonomi" }

@@ -1,6 +1,7 @@
 {
   "name": "Duygu Analizi",
   "task_type": "classification",
+  "description": "Müşteri yorumlarını pozitif, negatif veya nötr olarak etiketleme görevi. Bu set bir kontrast içindir: sınıflandırma gibi tek adımlı görevlerde, adım adım düşündüren karmaşık stratejilerin avantajı küçülür. Yani 'her görevde en iyi strateji aynı değildir' fikrini gösterir.",
   "examples": [
     { "input": "Bu ürünü çok beğendim, harika!", "output": "pozitif" },
     { "input": "Kargo çok geç geldi, hayal kırıklığı.", "output": "negatif" }

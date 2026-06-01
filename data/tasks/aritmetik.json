@@ -1,6 +1,7 @@
 {
   "name": "Aritmetik Problemler",
   "task_type": "arithmetic",
+  "description": "Çok adımlı işlem gerektiren günlük hayat hesap soruları (alışveriş, hız, oran). Bu set, modeli adım adım düşünmeye iten stratejilerin (Chain-of-Thought gibi) farkını en net gösteren yerdir; çünkü tek hamlede çözülemeyen, ara adımları olan sorulardan oluşur. Başlamak için en uygun set budur.",
   "examples": [
     { "input": "5 ile 3'ün toplamı kaçtır?", "output": "8" },
     { "input": "20'nin yarısı kaçtır?", "output": "10" }

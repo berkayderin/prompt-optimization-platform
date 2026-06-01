@@ -111,6 +111,25 @@ tasks = data["tasks"]
 task_type = data["task_type"]
 client = LLMClient(provider)
 
+# Seçili görev setinin ne olduğunu ve neden seçildiğini sade dille açıkla;
+# konuya yabancı kullanıcı, hangi soru kümesiyle çalıştığını bilsin.
+aciklama = data.get("description")
+if aciklama:
+    st.markdown(f"**Seçili görev seti: {data['name']}** ({len(tasks)} soru)")
+    st.caption(aciklama)
+
+with st.expander("Görev setleri neye göre seçildi?"):
+    st.write(
+        "Setler, farklı strateji türlerinin güçlü ve zayıf yanlarını ortaya "
+        "çıkaracak şekilde seçildi:\n\n"
+        "- **Aritmetik Problemler**: Adım adım düşünmeyi gerektiren sorular. "
+        "Burada Chain-of-Thought gibi yöntemler öne çıkar.\n"
+        "- **Duygu Analizi** ve **Konu Sınıflandırma**: Tek adımlı etiketleme "
+        "görevleri. Burada yöntemler arası fark küçülür.\n\n"
+        "Amaç şunu göstermektir: en iyi prompt stratejisi sabit değildir, "
+        "çözülecek görevin türüne göre değişir."
+    )
+
 st.markdown("**Adım 3 — Bir sekme seçip çalıştırın**")
 sekme1, sekme2, sekme3 = st.tabs(["Karşılaştırma", "Optimizasyon", "A/B Testi"])
 

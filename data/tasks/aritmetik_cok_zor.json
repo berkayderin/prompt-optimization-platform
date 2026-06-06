@@ -1,0 +1,19 @@
+{
+  "name": "Aritmetik Problemler (Çok Zor)",
+  "task_type": "arithmetic",
+  "description": "Yarışma düzeyi, tuzaklı problemler: karşılaşma sonrası varış, ters yüzde zinciri, dolduran-boşaltan musluklar, aynı fiyata kâr-zarar tuzağı, saat açısı ve modüler aritmetik. Zor set dahil önceki tüm setlerde güçlü modeller tavan etkisine ulaştığı için bu set, stratejiler arası farkın ortaya çıkabileceği en üst zorluk basamağı olarak tasarlanmıştır.",
+  "examples": [
+    { "input": "Bir sayının yüzde 30'u 45'tir. Bu sayı kaçtır?", "output": "150" },
+    { "input": "İki sayının toplamı 50, farkı 14'tür. Büyük sayı kaçtır?", "output": "32" }
+  ],
+  "tasks": [
+    { "question": "İki şehir arası 360 km'dir. A şehrinden saatte 60 km, B şehrinden saatte 90 km hızla iki araç aynı anda birbirine doğru yola çıkıyor. Karşılaştıktan kaç saat sonra hızlı araç A şehrine varır?", "answer": "1.6" },
+    { "question": "Bir ürünün fiyatı önce yüzde 20 artırılıyor, sonra yeni fiyat üzerinden yüzde 25 indirim yapılıyor. Son fiyat 540 TL olduğuna göre ürünün ilk fiyatı kaç TL'dir?", "answer": "600" },
+    { "question": "Bir havuzu A musluğu tek başına 6 saatte, B musluğu tek başına 12 saatte doldurur; havuzun dibindeki C tahliyesi dolu havuzu 8 saatte boşaltır. Üçü birlikte açılıyor, 4 saat sonra C kapatılıyor. Havuzun kalan kısmını A ve B birlikte kaç saatte doldurur?", "answer": "2" },
+    { "question": "Bir satıcı iki telefonun her birini 3000 TL'ye satıyor. Birinden yüzde 25 kâr, diğerinden yüzde 25 zarar ediyor. Bu iki satışın toplamında satıcı kaç TL zarar etmiştir?", "answer": "400" },
+    { "question": "Saat 15:40'ta akrep ile yelkovan arasındaki dar açı kaç derecedir?", "answer": "130" },
+    { "question": "Bir sayı 5'e bölündüğünde 3, 7'ye bölündüğünde 4 kalanını veriyor. Bu koşulu sağlayan en küçük iki pozitif tam sayının toplamı kaçtır?", "answer": "71" },
+    { "question": "İki basamaklı bir sayının rakamları toplamı 11'dir. Rakamlarının yerleri değiştirildiğinde sayı 27 artıyor. Bu sayı kaçtır?", "answer": "47" },
+    { "question": "Bir işi 8 işçi 15 günde bitirebiliyor. İş başladıktan 5 gün sonra 4 işçi işten ayrılıyor. İşin kalanı kaç günde biter?", "answer": "20" }
+  ]
+}

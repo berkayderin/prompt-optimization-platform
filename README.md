@@ -14,6 +14,40 @@ sonuçları için bir sağlayıcı (DeepSeek/GLM) anahtarı tanımlanması yeter
 
 > Canlı adres: https://prompt-optimization-platform.berkayderin.com.tr/
 
+## Ekran Görüntüleri
+
+Aşağıdaki görüntüler, platformun **gerçek sağlayıcıyla** (DeepSeek-V4-Flash) çalışan
+yerel bir oturumundan alınmıştır; sonuçlar gerçek model çıktılarıdır.
+
+**Genel görünüm** — adım adım kılavuz, görev seti açıklaması ve sekmeler:
+
+![Genel görünüm](docs/screenshots/01_genel_gorunum.png)
+
+**Karşılaştırma** — altı strateji aynı görev setinde; bar grafiği, metrik tablosu ve
+sonucun nedenini açıklayan yorum (çok zor sette yapılandırılmış muhakeme stratejileri
+öne geçiyor):
+
+![Karşılaştırma sonuçları](docs/screenshots/02_karsilastirma.png)
+
+**Optimizasyon** — meta-prompting ile iteratif iyileştirme; skor artmayınca erken
+durdurma devreye giriyor:
+
+![Optimizasyon](docs/screenshots/03_optimizasyon.png)
+
+**A/B Testi** — Zero-shot ile ReAct birebir kıyas (N=3 tekrar): ReAct %96 doğrulukla
+kazanıyor; sonuç sürüm geçmişine kaydediliyor:
+
+![A/B testi](docs/screenshots/04_ab_testi.png)
+
+**Geçmiş** — zaman damgalı deney kayıtları (strateji, görev seti, ayarlar, metrikler):
+
+![Geçmiş](docs/screenshots/05_gecmis.png)
+
+**Kendi Göreviniz** — kullanıcının kendi soru/cevap çiftlerini girip tüm stratejileri
+kendi görevi üzerinde denemesi:
+
+![Kendi göreviniz](docs/screenshots/06_kendi_gorev.png)
+
 ## Motivasyon
 
 Literatürde Chain-of-Thought, ReAct, Tree-of-Thoughts gibi çok sayıda prompt tekniği

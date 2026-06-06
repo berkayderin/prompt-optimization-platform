@@ -1,0 +1,17 @@
+{
+  "name": "Özetleme",
+  "task_type": "summarization",
+  "description": "Kısa paragrafları tek cümleyle özetleme görevi. Açık uçlu bir üretim görevidir; tek bir doğru cevap olmadığından doğruluk, modelin hakem olarak kullanıldığı LLM-as-judge yöntemiyle referans özete göre puanlanır. Bu set, kural tabanlı eşleşmenin yetmediği görevlerde platformun nasıl ölçüm yaptığını gösterir.",
+  "examples": [
+    { "input": "Şu metni tek cümleyle özetle: 'Kütüphane yaz boyunca tadilatta olacak. Okuyucular bu sürede dijital arşive ücretsiz erişebilecek.'", "output": "Tadilattaki kütüphane, yaz boyunca okuyucularına ücretsiz dijital arşiv erişimi sunacak." },
+    { "input": "Şu metni tek cümleyle özetle: 'Festival bu yıl üç gün sürecek. Programda konserlerin yanı sıra söyleşiler ve atölyeler de yer alıyor.'", "output": "Üç gün sürecek festivalde konserlerin yanında söyleşi ve atölyeler de olacak." }
+  ],
+  "tasks": [
+    { "question": "Şu metni tek cümleyle özetle: 'Şehirde artan trafik yoğunluğu üzerine belediye iki yeni metro hattının yapımına başladı. Hatların üç yıl içinde tamamlanması ve günlük bir milyon yolcu taşıması planlanıyor.'", "answer": "Belediye, trafiği azaltmak için üç yılda tamamlanacak ve günde bir milyon yolcu taşıyacak iki yeni metro hattına başladı." },
+    { "question": "Şu metni tek cümleyle özetle: 'Araştırmacılar grip aşısının yeni bir türünü geliştirdi. Klinik denemelerde aşının koruma oranının yüzde 70 düzeyinden yüzde 90 düzeyine çıktığı görüldü ve ciddi yan etki bildirilmedi.'", "answer": "Yeni geliştirilen grip aşısı, denemelerde ciddi yan etki göstermeden koruma oranını yüzde 90'a çıkardı." },
+    { "question": "Şu metni tek cümleyle özetle: 'Bölgedeki barajların doluluk oranı son bir yılda yüzde 60 seviyesinden yüzde 25 seviyesine düştü. Uzmanlar, su tasarrufu yapılmazsa yaz aylarında kesintilerin kaçınılmaz olduğunu belirtiyor.'", "answer": "Baraj doluluğu yüzde 25'e düştüğü için tasarruf yapılmazsa yazın su kesintileri bekleniyor." },
+    { "question": "Şu metni tek cümleyle özetle: 'Pandemiyle birlikte çevrim içi alışveriş alışkanlığı kalıcı hale geldi. Geçen yıl e-ticaret hacmi yüzde 40 artarken, küçük işletmelerin üçte biri ilk kez internetten satış yapmaya başladı.'", "answer": "E-ticaret hacmi yüzde 40 artarken küçük işletmelerin üçte biri ilk kez çevrim içi satışa başladı." },
+    { "question": "Şu metni tek cümleyle özetle: 'Yapılan ankete göre gençlerin günlük ekran süresi artarken kitap okuma süresi azaldı. Eğitimciler, okullarda serbest okuma saatlerinin yeniden düzenlenmesini öneriyor.'", "answer": "Gençlerde ekran süresi artıp okuma azaldığı için eğitimciler okullarda serbest okuma saatleri öneriyor." },
+    { "question": "Şu metni tek cümleyle özetle: 'Sahil kasabası bu yaz rekor sayıda turist ağırladı. Ziyaretçi artışı esnafı sevindirirken, altyapı yetersizliği ve çevre kirliliği konusundaki endişeleri de beraberinde getirdi.'", "answer": "Kasabadaki rekor turist artışı esnafı sevindirse de altyapı ve çevre kirliliği endişesi yarattı." }
+  ]
+}

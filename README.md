@@ -26,10 +26,19 @@ platform, söz konusu boşluğu doldurmayı hedefler.
 ## Özellikler
 
 - Tek bir görev setinde altı farklı prompt stratejisinin kontrollü karşılaştırması
-- Doğruluk ve ortalama token maliyeti metrikleri (gecikme süresi de motor düzeyinde ölçülür)
+- Dört metrik: doğruluk, tutarlılık (aynı soru N kez sorulup yanıt kararlılığı ölçülür),
+  ortalama token maliyeti ve gecikme süresi
+- Kullanıcının kendi görevini (soru + beklenen cevap) girip tüm stratejileri kendi
+  görevi üzerinde deneyebilmesi
+- Açık uçlu görevlerde (özetleme) LLM-as-judge ile puanlama; kapalı uçlu görevlerde
+  kural tabanlı eşleşme
 - Kazanan stratejinin neden öne çıktığını sade dille açıklayan sonuç yorumu
-- Meta-prompting tabanlı otomatik prompt iyileştirme (iteratif döngü)
-- İki stratejiyi doğrudan kıyaslayan ve sonucu sürüm geçmişine kaydeden A/B testi
+- Meta-prompting tabanlı otomatik prompt iyileştirme (iteratif döngü, skor
+  artmayınca erken durdurma)
+- İki stratejiyi doğrudan kıyaslayan ve sonucu zaman damgasıyla sürüm geçmişine
+  kaydeden A/B testi; kayıtların arayüzdeki **Geçmiş** sekmesinden izlenmesi
+- Tüm deneyleri tek komutla koşup `data/results/` altına kaydeden betik
+  (`run_experiments.py`) — makale tabloları bu çıktılardan beslenir
 - Sağlayıcı bağımsız mimari: DeepSeek, GLM, OpenAI ve yerel Ollama desteği
 - API anahtarı gerektirmeyen deneme (mock) modu ile tüm akışın çevrimdışı denenebilmesi
 - Konuya yabancı kullanıcılar için adım adım yönlendirmeli arayüz
@@ -49,17 +58,22 @@ platform, söz konusu boşluğu doldurmayı hedefler.
 ## Mimari
 
 ```
-app.py                  Streamlit arayüzü (üç sekme: karşılaştırma, optimizasyon, A/B)
+app.py                  Streamlit arayüzü (beş sekme: karşılaştırma, kendi göreviniz,
+                        optimizasyon, A/B testi, geçmiş)
+run_experiments.py      Tüm deneyleri komut satırından koşup sonuçları kaydeden betik
 core/
   llm_client.py         OpenAI uyumlu tek istemci (mock/deepseek/glm/openai/ollama)
   strategies.py         Prompt stratejilerinin şablonları
   datasets.py           Görev setlerini JSON dosyalarından yükleme
-  evaluator.py          Stratejileri çalıştırma ve metriklerle skorlama
-  optimizer.py          Meta-prompting ile otomatik iyileştirme
-  versioning.py         Prompt sürümleme ve A/B karşılaştırma
+  evaluator.py          Stratejileri çalıştırma; doğruluk/tutarlılık/token/gecikme
+                        skorlama (kural tabanlı + LLM-as-judge)
+  optimizer.py          Meta-prompting ile otomatik iyileştirme (erken durdurmalı)
+  versioning.py         Prompt sürümleme (zaman damgalı) ve A/B karşılaştırma
 data/
-  tasks/                Görev setleri (aritmetik, duygu analizi, konu sınıflandırma)
-  results/              A/B testinde kaydedilen prompt sürüm geçmişi (versions.json)
+  tasks/                Görev setleri (aritmetik, duygu analizi, konu sınıflandırma,
+                        özetleme)
+  results/              Deney çıktıları: sürüm geçmişi (versions.json), karşılaştırma
+                        ve deney CSV/JSON dosyaları
 ```
 
 DeepSeek, GLM, OpenAI ve Ollama hepsi OpenAI uyumlu bir API sunduğundan, yalnızca
@@ -89,13 +103,21 @@ doğruluk değerleri temsilidir.
 
 Arayüz, konuya yabancı kullanıcılar için adım adım yönlendirilmiştir:
 
-1. Soldaki panelden bir **görev seti** seçin (aritmetik, duygu analizi veya konu
-   sınıflandırma). Seçilen setin ne olduğu ve neden seçildiği ekranda açıklanır.
+1. Soldaki panelden bir **görev seti** seçin (aritmetik, duygu analizi, konu
+   sınıflandırma veya özetleme). Seçilen setin ne olduğu ve neden seçildiği ekranda
+   açıklanır. İsterseniz sıcaklığı ve tutarlılık ölçümü için tekrar sayısını (N)
+   ayarlayın.
 2. Bir sekme açın:
    - **Karşılaştırma**: Tüm stratejileri aynı sette dener ve en iyisini, ardından
      bu sonucun nedenini açıklar. Başlamak için en uygun seçenek budur.
-   - **Optimizasyon**: Tek bir başlangıç talimatını tur tur otomatik iyileştirir.
-   - **A/B Testi**: Seçtiğiniz iki yöntemi birebir karşılaştırır.
+   - **Kendi Göreviniz**: Kendi sorularınızı ve beklenen cevaplarını girersiniz;
+     sistem tüm stratejileri sizin göreviniz üzerinde dener ve en iyisini seçer.
+   - **Optimizasyon**: Tek bir başlangıç talimatını tur tur otomatik iyileştirir;
+     skor artmazsa erken durur.
+   - **A/B Testi**: Seçtiğiniz iki yöntemi birebir karşılaştırır ve sonucu zaman
+     damgasıyla sürüm geçmişine kaydeder.
+   - **Geçmiş**: Kaydedilen tüm deneyleri (hangi strateji, hangi set, hangi
+     ayarlar, hangi sonuç) listeler.
 3. **Çalıştır** düğmesine basın ve sonuçları görün.
 
 ## Yapılandırma
@@ -118,22 +140,44 @@ DEEPSEEK_MODEL=deepseek-chat
 ## Görev Setleri
 
 Görev setleri `data/tasks/` altında JSON olarak tanımlanır. Her set bir ad, görev tipi
-(`arithmetic` veya `classification`), few-shot örnekleri ve `question`/`answer`
-çiftlerinden oluşan görev listesi içerir. Yeni bir set eklemek için bu klasöre aynı
-yapıda bir JSON dosyası eklemek yeterlidir; arayüz dosyayı otomatik tanır.
+(`arithmetic`, `classification` veya `summarization`), few-shot örnekleri ve
+`question`/`answer` çiftlerinden oluşan görev listesi içerir. Yeni bir set eklemek için
+bu klasöre aynı yapıda bir JSON dosyası eklemek yeterlidir; arayüz dosyayı otomatik tanır.
 
 ## Değerlendirme
 
-Tüm stratejiler aynı görev seti üzerinde çalıştırılır. Model yanıtından cevap çıkarılır
-(sayısal görevlerde son sayı, sınıflandırma görevlerinde beklenen etiketin metinde
-geçmesi) ve beklenen cevapla karşılaştırılır. Değerlendirme motoru her strateji için
-doğruluk oranı, ortalama token sayısı ve ortalama gecikme süresini hesaplar; arayüzde
-karşılaştırmayı sade tutmak için doğruluk ve token maliyeti gösterilir.
+Tüm stratejiler aynı görev seti üzerinde çalıştırılır. Puanlama görev tipine göre
+yapılır:
+
+- **Aritmetik**: yanıttaki son sayı çıkarılır ve beklenen sayıyla karşılaştırılır
+  (exact match).
+- **Sınıflandırma**: beklenen etiketin yanıt metninde geçmesi yeterlidir.
+- **Özetleme (açık uçlu)**: tek bir doğru cevap olmadığından model hakem olarak
+  kullanılır (LLM-as-judge): yanıtın referans özetle özünde aynı bilgiyi taşıyıp
+  taşımadığına sıcaklık 0 ile karar verilir. Hakem çağrılarının maliyeti, stratejinin
+  kendi maliyetini ölçen token/gecikme metriklerine dahil edilmez.
+
+Değerlendirme motoru her strateji için dört metrik hesaplar: **doğruluk**,
+**tutarlılık** (her soru N kez sorulduğunda çalıştırmalar arası kararlılık; soru
+başına çoğunluk oranının ortalaması, N=1'de tanım gereği 1.0), **ortalama token**
+ve **ortalama gecikme**.
 
 Deneme (mock) modunda gerçek model çağrısı yapılmaz; bunun yerine her strateji için
 deterministik, temsilî sonuçlar üretilir. Bu sayede platform anahtarsız olarak
 denenebilir. Bu değerler bilimsel ölçüm değildir; gerçek sonuçlar bir sağlayıcı
 tanımlanarak elde edilir.
+
+## Deneylerin Komut Satırından Koşulması
+
+Makaleyi besleyecek deneyler tek komutla koşulur; tüm görev setlerinde tüm stratejiler
+çalıştırılır, sonuçlar `data/results/` altına CSV (set başına) ve JSON özeti olarak
+kaydedilir:
+
+```bash
+python run_experiments.py                      # .env'deki sağlayıcı ile
+python run_experiments.py --provider deepseek  # sağlayıcıyı elle seç
+python run_experiments.py --runs 3             # tutarlılık için her soruyu 3 kez sor
+```
 
 ## Docker ile Çalıştırma
 

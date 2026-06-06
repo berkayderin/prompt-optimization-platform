@@ -2,13 +2,14 @@
 
 Bir baslangic talimatini, modele "bu talimati daha etkili hale getir" dedirterek
 tur tur iyilestirir ve her turda gorev seti uzerinde test eder. Yeni talimat skoru
-artirirsa benimsenir; aksi halde mevcut en iyi korunur.
+artirirsa benimsenir; skor artmayan ilk turda dongu ERKEN DURUR (gereksiz model
+cagrisi ve maliyet onlenir).
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-from core.evaluator import _is_correct
+from core.evaluator import is_correct
 from core.llm_client import LLMClient
 
 
@@ -32,7 +33,8 @@ def _score(
     correct = 0
     for task in tasks:
         resp = client.complete(instruction, task["question"], temperature)
-        correct += int(_is_correct(resp.text, task["answer"], task_type))
+        # Puanlama gorev tipine gore yapilir; acik uclu gorevlerde LLM-as-judge.
+        correct += int(is_correct(client, resp.text, task, task_type))
     return correct / (len(tasks) or 1)
 
 
@@ -59,7 +61,11 @@ def optimize(
     rounds: int = 3,
     temperature: float = 0.7,
 ) -> tuple[str, float, list[OptimizationStep]]:
-    """Talimati tur tur iyilestirir; en iyi talimati, skorunu ve gecmisi dondurur."""
+    """Talimati tur tur iyilestirir; en iyi talimati, skorunu ve gecmisi dondurur.
+
+    rounds, EN FAZLA tur sayisidir: skoru artirmayan ilk oneride dongu erken
+    durdurulur (plan geregi "skor duzelmiyorsa dur").
+    """
     # Demo (mock) modunda gercek cagri yerine temsili bir egri uretilir.
     if getattr(client, "provider", None) == "mock":
         return _simulate_optimization(seed_instruction, rounds)
@@ -84,5 +90,8 @@ def optimize(
 
         if score > best_score:
             best_instruction, best_score = proposal, score
+        else:
+            # Erken durdurma: skor iyilesmediyse kalan turlari kosma.
+            break
 
     return best_instruction, best_score, history

@@ -14,5 +14,6 @@ data/results/*
 # Kisisel planlama ve vize dosyalari repoya dahil edilmez
 0-todo.md
 1-plan.md
+2-makale-taslak.md
 *.doc
 *.docx

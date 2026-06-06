@@ -1,0 +1,19 @@
+{
+  "name": "Aritmetik Problemler (Zor)",
+  "task_type": "arithmetic",
+  "description": "Çok adımlı (3-5 işlem) problemler: ardışık indirim, işçi-havuz, denklem kurma, oran ve kâr-zarar soruları. Kolay aritmetik setinde güçlü modeller tavan etkisine (tüm stratejiler %100) ulaştığı için bu set, stratejiler arası farkı ortaya çıkarmak üzere tasarlanmıştır. Adım adım düşündüren stratejilerin (Chain-of-Thought gibi) avantajı en net burada görülür.",
+  "examples": [
+    { "input": "Bir ürün 80 TL iken yüzde 15 indirim yapılıyor. Yeni fiyat kaç TL olur?", "output": "68" },
+    { "input": "Saatte 90 km hızla giden bir araç 40 dakikada kaç km yol alır?", "output": "60" }
+  ],
+  "tasks": [
+    { "question": "Bir mağaza 240 TL'lik ceketi önce yüzde 25 indirimle, ardından kalan fiyat üzerinden yüzde 10 ek indirimle satıyor. Ayşe bu ceketi alıp kasiyere 200 TL verirse kaç TL para üstü alır?", "answer": "38" },
+    { "question": "Bir otobüs ilk 2 saat boyunca saatte 80 km, sonraki 1,5 saat boyunca saatte 60 km hızla gidiyor. Bu sürede toplam yolun yarısı tamamlandığına göre yolun tamamı kaç km'dir?", "answer": "500" },
+    { "question": "Bir işi Ali tek başına 12 günde, Veli tek başına 6 günde bitirebiliyor. İkisi birlikte çalışırsa aynı iş kaç günde biter?", "answer": "4" },
+    { "question": "Bir çiftlikte tavuk ve koyunların toplam sayısı 30, toplam ayak sayısı 80'dir. Çiftlikte kaç koyun vardır?", "answer": "10" },
+    { "question": "Bir sınıftaki öğrencilerin yüzde 40'ı kızdır. Sınıfa 4 kız öğrenci daha katılınca kız sayısı erkek sayısına eşit oluyor. Sınıfın son durumdaki mevcudu kaçtır?", "answer": "24" },
+    { "question": "Bir su deposunun 3/5'i doludur. Depoya 60 litre su eklenince deponun 3/4'ü doluyor. Deponun tamamı kaç litredir?", "answer": "400" },
+    { "question": "Bir kitapçı, tanesi 15 TL'den aldığı 40 kitabın 25 tanesini 24 TL'den, kalanını 12 TL'den satıyor. Kitapçının bu satıştan toplam kârı kaç TL'dir?", "answer": "180" },
+    { "question": "Ardışık üç çift sayının toplamı 90'dır. Bu sayıların en büyüğü ile en küçüğünün çarpımı kaçtır?", "answer": "896" }
+  ]
+}

@@ -5,6 +5,7 @@ Makaledeki deney tablolari ve grafikler bu ciktilardan beslenir. Kullanim:
     python run_experiments.py                      # .env'deki LLM_PROVIDER ile
     python run_experiments.py --provider deepseek  # saglayiciyi elle sec
     python run_experiments.py --runs 3             # tutarlilik icin her soruyu 3 kez sor
+    python run_experiments.py --dataset aritmetik_zor  # yalnizca tek bir seti kos
 
 Cikti: gorev seti basina bir CSV (deney_<set>_<tarih>.csv) ve tum deneyin
 tek bir JSON ozeti (deney_ozeti_<tarih>.json).
@@ -38,6 +39,12 @@ def main() -> None:
     parser.add_argument(
         "--runs", type=int, default=1, help="Tutarlilik olcumu icin soru basina tekrar sayisi"
     )
+    parser.add_argument(
+        "--dataset",
+        default=None,
+        help="Yalnizca verilen gorev setini kos (dosya adi, uzantisiz); "
+        "verilmezse tum setler kosulur",
+    )
     args = parser.parse_args()
 
     load_dotenv()
@@ -59,7 +66,8 @@ def main() -> None:
         "gorev_setleri": [],
     }
 
-    for name in list_datasets():
+    setler = [args.dataset] if args.dataset else list_datasets()
+    for name in setler:
         data = load_dataset(name)
         print(f"\n=== {data['name']} ({len(data['tasks'])} soru, tip: {data['task_type']}) ===")
 
